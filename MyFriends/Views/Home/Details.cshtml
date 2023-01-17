@@ -1,0 +1,107 @@
+﻿@model MyFriends.ViewsModels.VMFriendWithImage
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Model.Friend.FullName</h1>
+
+<div>
+
+    @if (Model.Friend.Images.Count > 0)
+    {
+        if (Model.Friend.Images.First().MyImage != null)
+        {
+            <img src="data:image;base64,@System.Convert.ToBase64String(Model.Friend.Images.First().MyImage)" width="160" height="120" />
+        }
+    }
+    
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.ID)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.FirstName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.LastName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.FullName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.FullName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.PhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.PhoneNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.City)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.City)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.Street)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.Street)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.StreetNum)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.StreetNum)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Friend.Address)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Friend.Address)
+        </dd>
+    </dl>
+</div>
+<button onclick="addImage()" width="30px" height="30px">Add Image</button>
+<div id="AddImage" class="row" style="display:none">
+    <div class="col-md-4">
+        <form asp-action="addImage" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+            <div class="form-group">
+                <label asp-for="File" class="control-label"></label>
+                <input asp-for="File" class="form-control" />
+                <span asp-validation-for="File" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.Friend.ID  }) |
+    @Html.ActionLink("Add Image", "AddImage", new {  id = Model.Friend.ID  }) |
+    <a asp-action="Index">Back to List</a>
+</div>

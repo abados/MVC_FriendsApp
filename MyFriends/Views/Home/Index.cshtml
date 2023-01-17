@@ -1,0 +1,65 @@
+﻿@model IEnumerable<MyFriends.Models.Friend>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1> החברים שלי</h1>
+
+<p>
+    <a asp-action="Create">הוספת חבר חדש</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               תמונה
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+         
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @if (item.Images.Count > 0 && item.Images.First() != null)
+                    {
+                        <img src="data:image;base64,@System.Convert.ToBase64String(item.Images.First().MyImage)" width="80" height="60" />
+                    }
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new {  id=item.ID  }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
