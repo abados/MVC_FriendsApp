@@ -73,12 +73,37 @@ namespace MyFriends.Controllers
             return View("Details",new VMFriendWithImage { Friend= friendDB });
 
         }
-        public IActionResult deleteImage(int id)
+
+        //פונקציה למחיקת חבר
+        public ActionResult Delete(int id) {
+
+            Friend friend = DataLayer.Data.Friends.Include(f => f.Images).FirstOrDefault(f => f.ID == id);
+
+            if (friend==null) return RedirectToAction("Index");
+
+            return View(friend);
+                
+                
+        }
+        [HttpPost]
+        public IActionResult Delete(Friend friend)
+        {
+            Friend friendDB = DataLayer.Data.Friends.Include(f => f.Images).FirstOrDefault(f => f.ID == friend.ID);
+            if (friendDB == null) return RedirectToAction("Index");
+
+            DataLayer.Data.Images.RemoveRange(friendDB.Images);
+            DataLayer.Data.Friends.Remove(friendDB);
+            DataLayer.Data.SaveChanges();
+            return View(friend);
+        }
+
+
+        public IActionResult deleteImage(int id)//לא עובד
         {
             Image image = DataLayer.Data.Images.Include(f=>f.Friend).FirstOrDefault(i => i.ID == id);
             if(image== null) return RedirectToAction("Index");
             Friend friend = image.Friend;
-            friend.Images.Remove(friend.Images.Find(i=>i.ID==id));
+            DataLayer.Data.Images.Remove(image); ;
             DataLayer.Data.SaveChanges();
             return View("Details", new VMFriendWithImage { Friend = friend });
 
