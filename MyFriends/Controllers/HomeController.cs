@@ -44,6 +44,46 @@ namespace MyFriends.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult Edit(int? id)
+        {
+            //אם לא קיבלנו תעודת זהות
+            if (id == null) { return RedirectToAction(nameof(Index)); }
+            Friend friend = DataLayer.Data.Friends.Include(f => f.Images).FirstOrDefault(f => f.ID == id);
+            //Friend friend2 = DataLayer.Data.Friends.ToList().Find(f=>f.ID==id); Option 2
+            //אם לא קיבלנו תעודת זהות
+            if (friend == null) { return RedirectToAction("Index"); }
+            return View(friend);
+        }
+
+        [HttpPost,ValidateAntiForgeryToken]
+        public IActionResult Edit(Friend friend)
+        {
+            if (friend == null) return RedirectToAction("Index");
+            Friend friendDB = DataLayer.Data.Friends.ToList().Find(f=>f.ID== friend.ID);
+            if (friendDB == null) return RedirectToAction("Index");
+            friendDB.FirstName= friend.FirstName;
+            friendDB.LastName= friend.LastName;
+            friendDB.Email= friend.Email;
+            friendDB.City= friend.City;
+            friendDB.Street= friend.Street;
+            friendDB.Street= friend.Street;
+            friendDB.StreetNum= friend.StreetNum;
+            friendDB.PhoneNumber= friend.PhoneNumber;
+            DataLayer.Data.SaveChanges();
+            return View("Details",new VMFriendWithImage { Friend= friendDB });
+
+        }
+        public IActionResult deleteImage(int id)
+        {
+            Image image = DataLayer.Data.Images.Include(f=>f.Friend).FirstOrDefault(i => i.ID == id);
+            if(image== null) return RedirectToAction("Index");
+            Friend friend = image.Friend;
+            friend.Images.Remove(friend.Images.Find(i=>i.ID==id));
+            DataLayer.Data.SaveChanges();
+            return View("Details", new VMFriendWithImage { Friend = friend });
+
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -63,15 +103,23 @@ namespace MyFriends.Controllers
             //Friend friend2 = DataLayer.Data.Friends.ToList().Find(f=>f.ID==id); Option 2
             //אם לא קיבלנו תעודת זהות
             if(friend==null) { return RedirectToAction("Index"); }
-            VMFriendWithImage vMFriend = new VMFriendWithImage();
-            vMFriend.Friend = friend;
-            return View(vMFriend);
+            return View(new VMFriendWithImage { Friend=friend});
 
         }
 
-        public IActionResult addImage()
+        //פונקציה המקבלת תמונה עבור חבר קיים במערכת
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult addImage(VMFriendWithImage VM)
         {
-            return View();
+            if (VM == null) RedirectToAction("Index");//במידה ולא מתקבל אוביקט - חזרה לדף הבית
+            //מציאת החבר במסד הנתונים והבאת התמונות גם עם אינקלוד
+            Friend friend = DataLayer.Data.Friends.Include(f=>f.Images).FirstOrDefault(f => f.ID == VM.Friend.ID);
+            if(friend==null) RedirectToAction("Index");//במידה ולא מצא את החבר - חזרה לדף הבית
+            if (VM.File!=null) {
+                friend.AddImage(VM.File);
+                DataLayer.Data.SaveChanges();
+            }
+            return View("Details",new VMFriendWithImage { Friend=friend });
         }
     }
 }

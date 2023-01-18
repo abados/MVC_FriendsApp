@@ -3,5 +3,5 @@
     if (divImage.style.display == "none") {
         divImage.style.display = ""
     }
-    else divImage.style.display == "none"
+    else divImage.style.display = "none"
 }
